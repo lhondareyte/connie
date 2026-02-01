@@ -28,7 +28,15 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <math.h>
+#ifdef __linux__
 #include <linux/types.h>
+#else
+#include <sys/types.h>
+#endif
+
+#ifndef __linux__
+typedef uint32_t __u32;
+#endif
 
 #include "reverb.h"
 
