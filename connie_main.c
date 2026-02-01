@@ -645,7 +645,7 @@ static void tg_init( int tg_sample_rate )
   // build list of eq. tuned midi frequencies starting from lowest C (note 0)
   // (three halftones above the very low A six octaves down from a' 440 Hz)
 
-  float feq = concert_pitch / 64 * tg_halftone * tg_halftone * tg_halftone;
+  // float feq = concert_pitch / 64 * tg_halftone * tg_halftone * tg_halftone;
   float low_C = concert_pitch / 32.0 / scales[intonation].f_ratio[9];
 
   // build a list of intonation frequencies
@@ -656,7 +656,7 @@ static void tg_init( int tg_sample_rate )
     float f = scales[intonation].f_ratio[ tone ] * low_C * fmult;
     //printf( "%s\t%d\t%d\t%d\t%f\t%f\n", scales[intonation].label, midinote, tone, fmult, feq, f );
     tg_midi_freq[ midinote ] = f;
-    feq *= tg_halftone;
+    // feq *= tg_halftone;
     midi_vol_raw[ midinote ] = 0;
     tg_vol_key[ midinote ] = 0;
   } // for ( midinote )
