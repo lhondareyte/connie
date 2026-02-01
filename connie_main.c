@@ -47,7 +47,11 @@
 #include <jack/session.h>
 #endif
 
+#if defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__NetBSD__)
+#include <fenv.h>
+#else
 #include <fpu_control.h>
+#endif
 
 #include "connie.h"
 #include "connie_ui.h"
@@ -740,11 +744,15 @@ int main( int argc, char *argv[] ) {
   // BUT: "it's better to burn out than to fade away"
   // use function daz() "denormals are zero" in reverb
   // manipulate FPU Control Word (<fpu_contol.h>)
+
+#if defined (__FreeBSD__) || defined (__OpenBSD__) || defined (__NetBSD__)
+  fesetround(FE_TOWARDZERO);
+#else
   fpu_control_t cw;
   _FPU_GETCW( cw );
   cw |= _FPU_RC_ZERO;
   _FPU_SETCW( cw );
-
+#endif
 
 // registering the handler, catching terminating signals
 
