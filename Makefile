@@ -2,71 +2,68 @@
 BIN=$(DESTDIR)/usr/bin
 MAN=$(DESTDIR)/usr/share/man/man1
 
-
 # JACK_SESSION=-DJACK_SESSION 
 
-CFLAGS=$(JACK_SESSION) -Wall -std=c99 -O3 -fomit-frame-pointer -pipe
-CFLAGS_SSE=-DCONNIE_SSE $(CFLAGS) -march=pentium3 -msse -mfpmath=sse -ffast-math 
-CFLAGS_I386=-DCONNIE_I386 $(CFLAGS)
+CFLAGS      = $(JACK_SESSION) -Wall -std=c99 -O3 -fomit-frame-pointer -pipe
+CFLAGS     += -I/usr/local/include
+CFLAGS_SSE  = -DCONNIE_SSE $(CFLAGS) -march=pentium3 -msse -mfpmath=sse -ffast-math 
+CFLAGS_I386 = -DCONNIE_I386 $(CFLAGS)
+OBJECTS     = connie_main.o connie_ui.o reverb.o
+
+LDFLAGS     = -L/usr/local/lib
 
 #TARGETS=connie_i386 connie_sse
-TARGETS=connie
+TARGETS = connie
 all: $(TARGETS) 
 
 deb: all
 	fakeroot debian/rules binary
 
-
 connie: connie_main.o connie_ui.o reverb.o
-	gcc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
+	cc $(LDFLAGS) -o $@ $(OBJECTS) -lm -ljack -lconfuse
 
 connie_main.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	gcc -c $(CFLAGS) -o $@ $<
+	cc -c $(CFLAGS) -o $@ $<
 
 connie_ui.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	gcc -c $(CFLAGS) -o $@ $<
+	cc -c $(CFLAGS) -o $@ $<
 
 reverb.o: reverb.c reverb.h
-	gcc -c $(CFLAGS) -o $@ $<
-
+	cc -c $(CFLAGS) -o $@ $<
 
 connie_sse: connie_main_sse.o connie_ui_sse.o reverb_sse.o
-	gcc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
+	cc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
 
 connie_main_sse.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	gcc -c $(CFLAGS_SSE) -o $@ $<
+	cc -c $(CFLAGS_SSE) -o $@ $<
 
 connie_ui_sse.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	gcc -c $(CFLAGS_SSE) -o $@ $<
+	cc -c $(CFLAGS_SSE) -o $@ $<
 
 reverb_sse.o: reverb.c reverb.h
-	gcc -c $(CFLAGS_SSE) -o $@ $<
-
-
+	cc -c $(CFLAGS_SSE) -o $@ $<
 
 connie_i386: connie_main_i386.o connie_ui_i386.o reverb_i386.o
-	gcc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
+	cc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
 
 connie_main_i386.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	gcc -c $(CFLAGS_I386) -o $@ $<
+	cc -c $(CFLAGS_I386) -o $@ $<
 
 connie_ui_i386.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	gcc -c $(CFLAGS_I386) -o $@ $<
+	cc -c $(CFLAGS_I386) -o $@ $<
 
 reverb_i386.o: reverb.c reverb.h
-	gcc -c $(CFLAGS_I386) -o $@ $<
-
+	cc -c $(CFLAGS_I386) -o $@ $<
 
 clean:
-	rm -f *~ .*~ *.o
+	rm -f *~ .*~ $(OBJECTS)
 
 distclean: clean
-	rm $(TARGETS)
+	rm $(TARGETS) $(OBJECTS)
 	rm build-stamp configure-stamp
 
 debclean:
 	fakeroot debian/rules clean
-
 
 install: $(TARGETS) connie connie.1
 	install -s -p $(TARGETS) $(BIN)
