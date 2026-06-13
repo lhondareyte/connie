@@ -20,40 +20,40 @@ deb: all
 	fakeroot debian/rules binary
 
 connie: connie_main.o connie_ui.o reverb.o
-	cc $(LDFLAGS) -o $@ $(OBJECTS) -lm -ljack -lconfuse
+	$(CC) $(LDFLAGS) -o $@ $(OBJECTS) -lm -ljack -lconfuse
 
 connie_main.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	cc -c $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 connie_ui.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	cc -c $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 reverb.o: reverb.c reverb.h
-	cc -c $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $<
 
 connie_sse: connie_main_sse.o connie_ui_sse.o reverb_sse.o
-	cc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
+	$(CC) $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
 
 connie_main_sse.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	cc -c $(CFLAGS_SSE) -o $@ $<
+	$(CC) -c $(CFLAGS_SSE) -o $@ $<
 
 connie_ui_sse.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	cc -c $(CFLAGS_SSE) -o $@ $<
+	$(CC) -c $(CFLAGS_SSE) -o $@ $<
 
 reverb_sse.o: reverb.c reverb.h
-	cc -c $(CFLAGS_SSE) -o $@ $<
+	$(CC) -c $(CFLAGS_SSE) -o $@ $<
 
 connie_i386: connie_main_i386.o connie_ui_i386.o reverb_i386.o
-	cc $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
+	$(CC) $(LDFLAGS) -o $@ $^ -lm -ljack -lconfuse
 
 connie_main_i386.o: connie_main.c connie.h connie_ui.h reverb.h scales.h
-	cc -c $(CFLAGS_I386) -o $@ $<
+	$(CC) -c $(CFLAGS_I386) -o $@ $<
 
 connie_ui_i386.o: connie_ui.c connie.h connie_tg.h connie_ui.h
-	cc -c $(CFLAGS_I386) -o $@ $<
+	$(CC) -c $(CFLAGS_I386) -o $@ $<
 
 reverb_i386.o: reverb.c reverb.h
-	cc -c $(CFLAGS_I386) -o $@ $<
+	$(CC) -c $(CFLAGS_I386) -o $@ $<
 
 clean:
 	rm -f *~ .*~ $(OBJECTS)
